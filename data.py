@@ -1,3 +1,6 @@
+#Maximum distance 
+Dmax=5
+
 #Class
 C = [
     [1,1,1,1,1],
