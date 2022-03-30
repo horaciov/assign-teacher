@@ -16,7 +16,6 @@ toolbox = base.Toolbox()
 toolbox.register("teacher", random.randint, 0, TEACHER_SIZE-1)
 toolbox.register("individual", tools.initRepeat, creator.Individual,
                  toolbox.teacher, n=CLASS_SIZE)
-toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 #Operators
 toolbox.register("mate", tools.cxTwoPoint)
@@ -65,6 +64,12 @@ for g in range(NGEN):
         ind.fitness.values = fit
     
     # The population is entirely replaced by the offspring
+    while(len(offspring)<50):
+        ind=toolbox.individual()
+        if validateConstraints(ind):
+            ind.fitness.values=evaluate(ind)
+            offspring.append(ind)
+
     pop[:] = offspring
 
 #Non-dominated solutions
