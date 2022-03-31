@@ -12,7 +12,7 @@ def validateConstraints(X):
                 if(c>2):#More than 2 assigs
                     valid=False
                     break
-                if(C[index1][1]==C[index2][1]):#Diferente shifts
+                if(C[index1][1]==C[index2][1]):#Same shifts
                     valid=False
                     break
                 if(V[C[index1][4]-1][C[index2][4]-1]>Dmax):#Maximun distances exceeded
