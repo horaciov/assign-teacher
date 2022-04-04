@@ -63,3 +63,27 @@ def f3(X):
             countTeacherAssigned=countTeacherAssigned-1
     result=result/countTeacherAssigned
     return result
+
+def f1_c(X):
+    r=[]
+    for x in X:
+        r.append(f1(x))
+    return r
+
+def f2_c(X):
+    r=[]
+    for x in X:
+        r.append(f2(x))
+    return r
+
+def f3_c(X):
+    r=[]
+    for x in X:
+        r.append(f3(x))
+    return r
+
+def f3_c_min(X):
+    r=[]
+    for x in X:
+        r.append(f3(x)*-1)
+    return r
