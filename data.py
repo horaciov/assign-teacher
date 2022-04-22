@@ -1,5 +1,5 @@
 #Maximum distance 
-Dmax=5
+Dmax=10
 
 #Class
 C = [
