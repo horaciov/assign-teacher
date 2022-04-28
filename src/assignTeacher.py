@@ -1,36 +1,32 @@
-from pymoo.algorithms.moo.nsga2 import NSGA2
-from select import select
-import numpy as np
-
-from pymoo.factory import get_algorithm, get_crossover, get_mutation, get_sampling, get_reference_directions
-from pymoo.optimize import minimize
-from pymoo.core.problem import Problem, ElementwiseProblem
-from constraint import validateConstraints2
-
-from data import C, D
+import data
 from objetivefunctions import f1, f2, f3
-
+from constraint import validateConstraints
+from multiprocessing.pool import ThreadPool
+from pymoo.core.problem import ElementwiseProblem, starmap_parallelized_eval
+from pymoo.algorithms.moo.nsga2 import NSGA2
+from pymoo.factory import get_crossover, get_mutation, get_sampling
+from pymoo.optimize import minimize
 from pymoo.visualization.scatter import Scatter
 
-from pymoo.core.problem import starmap_parallelized_eval
-from multiprocessing.pool import ThreadPool
+#Initialize
+data.init(maxDistance=30)
 
-
-CLASS_SIZE = len(C)
-TEACHER_SIZE = len(D)
+#Define the Teacher Assign Problem 
+#With use a string of integers
+CLASS_SIZE = len(data.C)
+TEACHER_SIZE = len(data.D)
 N_OBJ = 3
 N_CONSTR = 3
 
-
-class MyProblem(ElementwiseProblem):
+class ADEEProblem(ElementwiseProblem):
 
     def __init__(self, **kwargs):
         super().__init__(n_var=CLASS_SIZE, n_obj=N_OBJ,
                          n_constr=N_CONSTR, xl=0, xu=TEACHER_SIZE-1, type_var=int,**kwargs)
 
     def _evaluate(self, x, out, *args, **kwargs):
-        out["F"] = [f1(x), f2(x), f3(x)*-1]
-        out["G"] = validateConstraints2(x)
+        out["F"] = [f1(x), f2(x), f3(x)*-1] #For minimization context, with multiply *-1 the max f3
+        out["G"] = validateConstraints(x)
 
 # the number of threads to be used
 n_threads = 8
@@ -39,7 +35,7 @@ n_threads = 8
 pool = ThreadPool(n_threads)
 
 # define the problem by passing the starmap interface of the thread pool
-problem = MyProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
+problem = ADEEProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
 
 # Configure NSGA2 
 algorithm = NSGA2(pop_size=100,sampling=get_sampling("int_random"),
@@ -53,8 +49,6 @@ res = minimize(problem,
                ('n_gen', 100),
                seed=1,
                verbose=False)
-
-
 
 print('Threads:', res.exec_time)
 
