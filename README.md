@@ -1,6 +1,9 @@
 # assign-teacher
 Assign teachers to educational establishment
 
+Asignación de Docentes a Establecimientos Educativos: Un Enfoque Multi-objetivo
+Horacio Villalba-Martí
+
 # Data Set
 To configure the data set used, perform the following tasks:
   * Install PostgreSQL
