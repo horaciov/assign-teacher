@@ -50,7 +50,7 @@ res = minimize(problem,
                seed=1,
                verbose=False)
 
-print('Threads:', res.exec_time)
+print('Time:', res.exec_time)
 
 print("Best solution found: %s" % res.X)
 print("Function value: %s" % res.F)
