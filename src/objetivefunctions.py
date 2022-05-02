@@ -9,9 +9,10 @@ def f1(X):
         i=X[j]
         k=data.C[j][4]-1
         #Add distance between Teacher Home and Establishment
-        d=distance.distance((data.D[i][1],data.D[i][2]),(data.E[k][1],data.E[k][2])).kilometers        
+        d=distance.distance((data.D[i][1],data.D[i][2]),(data.E[k][1],data.E[k][2])).kilometers      
         result=result+d
     result=result/n_c
+    print("f1 distance avg: "+str(result))
     return result
 
 #Calculate f2(X) - Average establishment per teacher

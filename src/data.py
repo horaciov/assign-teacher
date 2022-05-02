@@ -1,4 +1,5 @@
 #data of Problem Assign Teacher
+import psycopg2
 
 
 
@@ -7,29 +8,31 @@ def init(maxDistance):
     global Dmax, C, D, E
     Dmax=maxDistance
     #Class
-    C = [
-        [1,1,1,1,1],
-        [1,1,1,2,2],
-        [1,2,1,3,3],
-        [2,2,1,1,1],
-        [2,2,1,2,2],
-        [2,1,1,3,3]
-    ]
-
+    conn = psycopg2.connect("dbname=tfmdb user=tfm password=Tfm123456 port=5433")
+    cur = conn.cursor()
+    
+    C = []
+    cur.execute("select nro,g,t,s,i,e from c order by 1")
+    print("Load C...")
+    for row in cur:
+        C.append([row[1],row[2],row[3],row[4],row[5]])
+   
     #Teachers
-    D=[
-        [1,3,4],
-        [2,0,9],
-        [3,4,3],
-        [4,0,4]
-    ]
+    D=[]
+    cur.execute("select nro,lat,long from d order by 1")
+    print("Load D...")
+    for row in cur:
+        D.append([row[0],row[1],row[2]])
 
     #Establishment
-    E=[
-        [1,1,5],
-        [2,3,7],
-        [3,9,2]
-    ]
+    E=[]
+    cur.execute("select nro,lat,long from e order by 1")
+    print("Load E...")
+    for row in cur:
+        E.append([row[0],row[1],row[2]])
+
+    cur.close()
+    conn.close()
 
 
 
