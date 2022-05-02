@@ -1,0 +1,1 @@
+Time: 3.797588586807251Best solution found:[[1137  966  745 ... 1181 1123 1168]]Function value: [[ 7.81204388  1.44733503 -1.90038071]]Constraint violation: [[0.]]

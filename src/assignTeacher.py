@@ -20,6 +20,16 @@ TEACHER_SIZE = len(data.D)
 N_OBJ = 3
 N_CONSTR = 3
 
+class ADEEProblem(ElementwiseProblem):
+
+    def __init__(self, **kwargs):
+        super().__init__(n_var=CLASS_SIZE, n_obj=N_OBJ,
+                         n_constr=N_CONSTR, xl=0, xu=TEACHER_SIZE-1, type_var=int,**kwargs)
+
+    def _evaluate(self, x, out, *args, **kwargs):
+        out["F"] = [f1(x), f2(x), f3(x)*-1] #For minimization context, with multiply *-1 the max f3
+        out["G"] = validateConstraints(x)
+
 def generate_ind():
     ind=[-1]*CLASS_SIZE
     teachers=[]
@@ -27,8 +37,6 @@ def generate_ind():
         teachers.append(i)
     c=0
     while(c<CLASS_SIZE):
-        print("Cantidad de docentes: "+str(len(teachers)))
-        print("Clases asignadas: "+str(c))
         indx=randrange(len(teachers)) #Select a Teacher randomly
         i=teachers[indx]
         teachers.remove(i)
@@ -65,23 +73,11 @@ def generate_ind():
     return ind
 
 pop_0=[]
-for i in range(1):    
+for i in range(100):    
     pop_0.append(generate_ind())
     print(i)
 
 pop_0 = Population.new("X", pop_0)
-
-
-
-class ADEEProblem(ElementwiseProblem):
-
-    def __init__(self, **kwargs):
-        super().__init__(n_var=CLASS_SIZE, n_obj=N_OBJ,
-                         n_constr=N_CONSTR, xl=0, xu=TEACHER_SIZE-1, type_var=int,**kwargs)
-
-    def _evaluate(self, x, out, *args, **kwargs):
-        out["F"] = [f1(x), f2(x), f3(x)*-1] #For minimization context, with multiply *-1 the max f3
-        out["G"] = validateConstraints(x)
 
 # the number of threads to be used
 n_threads = 8
@@ -95,19 +91,29 @@ problem = ADEEProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
 # Configure NSGA2 
 algorithm = NSGA2(pop_size=100,sampling=pop_0,
                crossover=get_crossover("int_sbx", prob=1.0, eta=3.0),
-               mutation=get_mutation("int_pm",  prob=1.0,eta=3.0)
+               mutation=get_mutation("int_pm",eta=3.0)
                ,eliminate_duplicates=True)
 
 #Optimize
 res = minimize(problem,
                algorithm,
-               ('n_gen', 10),
+               ('n_gen', 100),
                seed=1,
                verbose=True)
 
+
+f = open("result.txt", "w")
+f.write("Time: %s" % res.exec_time)
+f.write("Best solution found:")
+f.write(str(res.X))
+f.write("Function value: %s" % res.F)
+f.write("Constraint violation: %s" % res.CV)
+f.close()
+
 print('Time:', res.exec_time)
 
-print("Best solution found: %s" % res.X)
+
+print("Best solution found:" % res.X)
 print("Function value: %s" % res.F)
 print("Constraint violation: %s" % res.CV)
 
