@@ -4,6 +4,9 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 import matplotlib.pyplot as plt
 import numpy as np
 
+a={"pos":2,"teacher":7}
+print(a['teacher'])
+
 # Fixing random state for reproducibility
 np.random.seed(19680801)
 

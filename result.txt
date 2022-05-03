@@ -1,1 +1,1 @@
-Time: 3.797588586807251Best solution found:[[1137  966  745 ... 1181 1123 1168]]Function value: [[ 7.81204388  1.44733503 -1.90038071]]Constraint violation: [[0.]]
+Time: 34.775683641433716Best solution found:[[ 753 1302    0 ... 1179  174 1749]]Function value: [[46.0661679   1.86360779 -1.88246386]]Constraint violation: [[0.]]
