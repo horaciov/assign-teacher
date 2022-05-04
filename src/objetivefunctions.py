@@ -12,7 +12,7 @@ def f1(X):
         d=distance.distance((data.D[i][1],data.D[i][2]),(data.E[k][1],data.E[k][2])).kilometers      
         result=result+d
     result=result/n_c
-    print("f1 distance avg: "+str(result))
+    print("f1: "+str(result))
     return result
 
 #Calculate f2(X) - Average establishment per teacher
@@ -41,6 +41,7 @@ def f2(X):
         else: #Not Assigned
             countTeacherAssigned=countTeacherAssigned-1
     result=result/countTeacherAssigned
+    print("f2: "+str(result))
     return result
 
 #Calculate f3(X) - Average class per teacher
@@ -66,4 +67,5 @@ def f3(X):
         else: #Not Assigned
             countTeacherAssigned=countTeacherAssigned-1
     result=result/countTeacherAssigned
+    print("f3: "+str(result))
     return result

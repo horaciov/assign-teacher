@@ -1,5 +1,5 @@
 
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, Manager
 import queue
 
 
@@ -10,7 +10,8 @@ def print_func(qu,continent='Asia'):
 if __name__ == "__main__":  # confirms that the code is under main function
     names = ['America', 'Europe', 'Africa']
     procs = []
-    q = Queue()
+    mananger = Manager()
+    q = mananger.Queue()
     proc = Process(target=print_func,args=(q,'Asia'))  # instantiating without any argument
     procs.append(proc)
     proc.start()

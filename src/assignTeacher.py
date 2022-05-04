@@ -1,4 +1,3 @@
-from pydoc import classify_class_attrs
 import data
 from objetivefunctions import f1, f2, f3
 from constraint import validateConstraints
@@ -11,12 +10,12 @@ from pymoo.visualization.scatter import Scatter
 from pymoo.core.population import Population
 from random import randrange
 from geopy import distance
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Manager
 import numpy as np
 from pymoo.core.repair import Repair
 
 #Initialize
-data.init(maxDistance=50)
+data.init(maxDistance=40)
 
 #Define the Teacher Assign Problem 
 CLASS_SIZE = len(data.C)
@@ -42,7 +41,7 @@ def generate_ind(name,q):
     for i in range(TEACHER_SIZE):
         teachers.append(i)
     c=0
-    while(c<CLASS_SIZE):
+    while(c<CLASS_SIZE and len(teachers)>0):
         indx=randrange(len(teachers)) #Select a Teacher randomly
         i=teachers[indx]        
         teachers.remove(i)
@@ -53,11 +52,14 @@ def generate_ind(name,q):
             if ind[j]==-1:
                 e=data.C[j][4]-1
                 dist=distance.distance((data.E[e][1],data.E[e][2]),(data.D[i][1],data.D[i][2])).kilometers
-                if dist<dist_min:
+                if dist<dist_min and dist<=data.Dmax:
                     dist_min=dist
                     pos_min=j
+        if pos_min==-1:
+            continue
         ind[pos_min]=i
         c=c+1
+        print("Asignado por proceso "+str(name)+" "+str(c))
         if(c==CLASS_SIZE):
             break
 
@@ -74,13 +76,15 @@ def generate_ind(name,q):
                         if dist<dist2_min:
                             dist2_min=dist    
                             pos2_min=j
+                            if e1==e2:
+                                break
         if pos2_min!=-1:
             ind[pos2_min]=i
             c=c+1   
     print("Individuo agregado por proceso: "+str(name))
     q.put(ind)
 
-class AEEEFacible(Repair):
+class AEEEFeacible(Repair):
 
     def _do(self, problem, pop, **kwargs):
 
@@ -193,9 +197,10 @@ class AEEEFacible(Repair):
         return pop
 
 if __name__ == '__main__':
-    q=Queue()
+    mananger = Manager()
+    q = mananger.Queue()
     process=[]
-    cp=10
+    cp=12
     for index in range(cp):
         print("Main    : create and start process %d." % index)
         p = Process(target=generate_ind, args=(index,q))
@@ -224,9 +229,9 @@ if __name__ == '__main__':
 
     # Configure NSGA2 
     algorithm = NSGA2(pop_size=10,sampling=pop_0,
-                crossover=get_crossover("int_sbx", prob=1.0, eta=3.0),
-                mutation=get_mutation("int_pm",eta=3.0),
-                repair=AEEEFacible(),
+                crossover=get_crossover("int_k_point", n_points=4),
+                mutation=get_mutation("int_pm"),
+                repair=AEEEFeacible(),
                 eliminate_duplicates=True)
 
     #Optimize
