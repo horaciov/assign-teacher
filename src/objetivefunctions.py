@@ -15,31 +15,26 @@ def f1(X):
     print("f1: "+str(result))
     return result
 
-#Calculate f2(X) - Average establishment per teacher
+#Calculate f2(X) - Max teacher with two shigt in the same establishment
 def f2(X):
     result=0
-    countTeacherAssigned=len(data.D)
+    countTeacherAssigned=0
     assign1=-1
     assign2=-1
     for i in range(len(data.D)):
         assign1=-1
         assign2=-1
         for j in range(len(X)):
-            if i==X[j]:
+            if i==X[j]:                
                 if assign1==-1:
+                    countTeacherAssigned=countTeacherAssigned+1
                     assign1=j
                 else:
                     assign2=j
         if(assign1!=-1): #Assigned
             if(assign2!=-1): #Two assigned
                 if(data.C[assign1][4]==data.C[assign2][4]): #Same Establishment
-                    result=result+1
-                else: #Diferent Establishment
-                    result=result+2
-            else: #One assigned
-                result=result+1
-        else: #Not Assigned
-            countTeacherAssigned=countTeacherAssigned-1
+                    result=result+1              
     result=result/countTeacherAssigned
     print("f2: "+str(result))
     return result

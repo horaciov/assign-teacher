@@ -1,7 +1,7 @@
-import data
+import  data
 from objetivefunctions import f1, f2, f3
 from constraint import validateConstraints
-from multiprocessing.pool import ThreadPool
+import multiprocessing
 from pymoo.core.problem import ElementwiseProblem, starmap_parallelized_eval
 from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.factory import get_crossover, get_mutation,get_sampling
@@ -30,7 +30,7 @@ class ADEEProblem(ElementwiseProblem):
                          n_constr=N_CONSTR, xl=0, xu=TEACHER_SIZE-1, type_var=int,**kwargs)
 
     def _evaluate(self, x, out, *args, **kwargs):
-        out["F"] = [f1(x), f2(x), f3(x)*-1] #For minimization context, with multiply *-1 the max f3
+        out["F"] = [f1(x), f2(x)*-1, f3(x)*-1] #For minimization context, with multiply *-1 the max f2 and f3
         out["G"] = validateConstraints(x)
 
 
@@ -149,14 +149,15 @@ class AEEEFeacible(Repair):
                                 if dist<dist2_min:
                                     dist2_min=dist    
                                     pos2_min=j
-                    if pos2_min!=-1:
-                        z[pos2_min]=i['teacher']
-                        c=c+1 
-                        break
+                                    if e1==e2:
+                                        break
+                if pos2_min!=-1:
+                   z[pos2_min]=i['teacher']
+                   c=c+1                 
                 if c==CLASS_SIZE:
                     break
             
-            while(c<CLASS_SIZE):
+            while(c<CLASS_SIZE and len(teachersZero)>0):
                 indx=randrange(len(teachersZero)) #Select a Teacher randomly
                 i=teachersZero[indx]   
                 teachersZero.remove(i)                   
@@ -187,6 +188,8 @@ class AEEEFeacible(Repair):
                                 if dist<dist2_min:
                                     dist2_min=dist    
                                     pos2_min=j
+                                    if e1==e2:
+                                        break
                 if pos2_min!=-1:
                     z[pos2_min]=i
                     c=c+1   
@@ -196,40 +199,46 @@ class AEEEFeacible(Repair):
         print("End repair")
         return pop
 
+
+
 if __name__ == '__main__':
     mananger = Manager()
     q = mananger.Queue()
+    
     process=[]
-    cp=12
-    for index in range(cp):
-        print("Main    : create and start process %d." % index)
-        p = Process(target=generate_ind, args=(index,q))
-        process.append(p) 
-        p.start()     
-          
+    cp=10
+    for i in range(10):
+        for index in range(cp):
+            print("Main    : create and start process %d." % index)
+            p = Process(target=generate_ind, args=(index,q))
+            process.append(p) 
+            p.start()     
+            
+        for p in process:
+            p.join()
 
-    for p in process:
-        p.join()
-
-    print("Terminaron")
+        print("Terminaron")
 
     pop_0=[]
     while not q.empty():
         pop_0.append(q.get())
+
+    #for i in range(50):
+    #   pop_0.append(data.mec())
     pop_0 = Population.new("X", pop_0)
 
-    # the number of threads to be used
-    n_threads = 8
 
-    # initialize the pool
-    pool = ThreadPool(n_threads)
+    # the number of processes to be used
+    n_proccess = 10
+    
+    pool = multiprocessing.Pool(n_proccess)
 
     # define the problem by passing the starmap interface of the thread pool
     problem = ADEEProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
 
     # Configure NSGA2 
-    algorithm = NSGA2(pop_size=10,sampling=pop_0,
-                crossover=get_crossover("int_k_point", n_points=4),
+    algorithm = NSGA2(pop_size=50,sampling=pop_0,
+                crossover=get_crossover("int_exp"),
                 mutation=get_mutation("int_pm"),
                 repair=AEEEFeacible(),
                 eliminate_duplicates=True)
@@ -237,7 +246,7 @@ if __name__ == '__main__':
     #Optimize
     res = minimize(problem,
                 algorithm,
-                ('n_gen', 40),
+                ('n_gen', 50),
                 seed=1,
                 verbose=True)
 

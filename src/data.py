@@ -34,5 +34,26 @@ def init(maxDistance):
     cur.close()
     conn.close()
 
+def mec():
+    conn = psycopg2.connect("dbname=tfmdb user=tfm password=Tfm123456 port=5433")
+    cur = conn.cursor()
+   
+    cur.execute("SELECT distinct nro_documento,latitud,longitud FROM docente d join asignacionmec m on d.nro_documento=m.docente_id where departamento='Alto Parana' and latitud is not null order by 1;")
 
+    DD=[]
+    for index, row in enumerate(cur):     
+        DD.append((row[0],index))
+    DD=dict(DD)
 
+   
+    cur.execute("select docente_id,establecimiento_id from asignacionmec order by seccion_id")
+    MEC=[]
+    for row in cur:
+        MEC.append(DD[row[0]])    
+    
+    cur.close()
+    conn.close()
+
+    return MEC
+
+print(str(len(mec())))
