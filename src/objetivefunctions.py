@@ -12,7 +12,6 @@ def f1(X):
         d=distance.distance((data.D[i][1],data.D[i][2]),(data.E[k][1],data.E[k][2])).kilometers      
         result=result+d
     result=result/n_c
-    print("f1: "+str(result))
     return result
 
 #Calculate f2(X) - Max teacher with two shigt in the same establishment
@@ -36,7 +35,6 @@ def f2(X):
                 if(data.C[assign1][4]==data.C[assign2][4]): #Same Establishment
                     result=result+1              
     result=result/countTeacherAssigned
-    print("f2: "+str(result))
     return result
 
 #Calculate f3(X) - Average class per teacher
@@ -62,5 +60,4 @@ def f3(X):
         else: #Not Assigned
             countTeacherAssigned=countTeacherAssigned-1
     result=result/countTeacherAssigned
-    print("f3: "+str(result))
     return result

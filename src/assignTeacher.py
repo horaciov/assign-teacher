@@ -4,7 +4,9 @@ from constraint import validateConstraints
 import multiprocessing
 from pymoo.core.problem import ElementwiseProblem, starmap_parallelized_eval
 from pymoo.algorithms.moo.nsga2 import NSGA2
-from pymoo.factory import get_crossover, get_mutation,get_sampling
+from pymoo.algorithms.moo.nsga3 import NSGA3
+from pymoo.algorithms.moo.rnsga3 import RNSGA3
+from pymoo.factory import get_crossover, get_mutation,get_sampling,get_reference_directions
 from pymoo.optimize import minimize
 from pymoo.visualization.scatter import Scatter
 from pymoo.core.population import Population
@@ -30,7 +32,9 @@ class ADEEProblem(ElementwiseProblem):
                          n_constr=N_CONSTR, xl=0, xu=TEACHER_SIZE-1, type_var=int,**kwargs)
 
     def _evaluate(self, x, out, *args, **kwargs):
-        out["F"] = [f1(x), f2(x)*-1, f3(x)*-1] #For minimization context, with multiply *-1 the max f2 and f3
+        e=[f1(x), f2(x)*-1, f3(x)*-1]
+        print(e)
+        out["F"] = e #For minimization context, with multiply *-1 the max f2 and f3
         out["G"] = validateConstraints(x)
 
 
@@ -93,9 +97,9 @@ class AEEEFeacible(Repair):
         # the packing plan for the whole population (each row one individual)
         Z = pop.get("X")
 
-        # now repair each indvidiual i
+        # now repair each indvidiual zi
         for zi in range(len(Z)):
-            # the packing plan for i
+            # the packing plan for zi
             z = Z[zi]
             valid=validateConstraints(z)
             
@@ -208,6 +212,7 @@ if __name__ == '__main__':
     process=[]
     cp=10
     for i in range(10):
+        print("Inicio Grupo: "+str(i))
         for index in range(cp):
             print("Main    : create and start process %d." % index)
             p = Process(target=generate_ind, args=(index,q))
@@ -217,14 +222,14 @@ if __name__ == '__main__':
         for p in process:
             p.join()
 
-        print("Terminaron")
+        print("Termino Grupo: "+str(i))
 
     pop_0=[]
     while not q.empty():
         pop_0.append(q.get())
 
-    #for i in range(50):
-    #   pop_0.append(data.mec())
+    for i in range(50):
+       pop_0.append(data.mec())
     pop_0 = Population.new("X", pop_0)
 
 
@@ -237,7 +242,13 @@ if __name__ == '__main__':
     problem = ADEEProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
 
     # Configure NSGA2 
-    algorithm = NSGA2(pop_size=50,sampling=pop_0,
+    # create the reference directions to be used for the optimization
+    ref_dirs = get_reference_directions("das-dennis", 3, n_partitions=12)   
+    ref_points = np.array([[0,-1,-2], [4, -0.5,-1.9],[6, -0.6,-1.7]])
+
+    algorithm = RNSGA3(pop_per_ref_point=21,sampling=pop_0,
+                ref_points=ref_points,
+                mu=0.1,
                 crossover=get_crossover("int_exp"),
                 mutation=get_mutation("int_pm"),
                 repair=AEEEFeacible(),

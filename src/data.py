@@ -55,5 +55,3 @@ def mec():
     conn.close()
 
     return MEC
-
-print(str(len(mec())))
