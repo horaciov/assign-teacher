@@ -15,7 +15,7 @@ if __name__ == '__main__':
     #Init population on 10 group
     process=[]
     cp=10
-    for i in range(1):
+    for i in range(10):
         print("Start group: "+str(i))
         for index in range(cp):
             print("Main    : create and start process %d." % index)
