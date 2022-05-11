@@ -1,11 +1,9 @@
 #data of Problem Assign Teacher
 import psycopg2
 
-
-
 def init(maxDistance):
     #Maximum distance on kilometers
-    global Dmax, C, D, E
+    global Dmax, C, D, E, CLASS_SIZE, TEACHER_SIZE, N_OBJ, N_CONSTR
     Dmax=maxDistance
     #Class
     conn = psycopg2.connect("dbname=tfmdb user=tfm password=Tfm123456 port=5433")
@@ -31,27 +29,11 @@ def init(maxDistance):
     for row in cur:
         E.append([row[0],row[1],row[2]])
 
+    #Configure size
+    CLASS_SIZE = len(C)
+    TEACHER_SIZE = len(D)
+    N_OBJ = 3
+    N_CONSTR = 3
+
     cur.close()
     conn.close()
-
-def mec():
-    conn = psycopg2.connect("dbname=tfmdb user=tfm password=Tfm123456 port=5433")
-    cur = conn.cursor()
-   
-    cur.execute("SELECT distinct nro_documento,latitud,longitud FROM docente d join asignacionmec m on d.nro_documento=m.docente_id where departamento='Alto Parana' and latitud is not null order by 1;")
-
-    DD=[]
-    for index, row in enumerate(cur):     
-        DD.append((row[0],index))
-    DD=dict(DD)
-
-   
-    cur.execute("select docente_id,establecimiento_id from asignacionmec order by seccion_id")
-    MEC=[]
-    for row in cur:
-        MEC.append(DD[row[0]])    
-    
-    cur.close()
-    conn.close()
-
-    return MEC
