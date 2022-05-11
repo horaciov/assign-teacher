@@ -52,7 +52,7 @@ if __name__ == '__main__':
     #Optimize
     res = minimize(problem,
                 algorithm,
-                ('n_gen', 50),
+                ('n_gen', 100),
                 seed=1,
                 verbose=True)
 
