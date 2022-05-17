@@ -1,4 +1,3 @@
-DROP TABLE tfm.establecimiento;
 CREATE TABLE tfm.establecimiento (
 	id varchar(7) NOT NULL,
 	departamento_id varchar(10) NULL,
@@ -6524,8 +6523,6 @@ INSERT INTO tfm.establecimiento (id,departamento_id,departamento,distrito_id,dis
 	 ('0011025','20','Capital','274','Asunción',1,'Urbana','9096','RICARDO BRUGADA','CABALLERO Y FLORENCIO VILLAMAYOR','25º16''50.699"S','57º37''45.901"W',-25.28074972222222,-57.62941694444444),
 	 ('0011004','20','Capital','274','Asunción',1,'Urbana','9051','LA CATEDRAL','GRAL. DIAZ E/ CHILE Y ALBERDI Nª 357','25º17''0.895"S','57º38''11.591"W',-25.283581944444446,-57.63655305555555);
 
-DROP TABLE tfm.e;
-
 CREATE TABLE tfm.e (
 	nro int4 NOT NULL,
 	lat numeric NULL,
@@ -7043,8 +7040,6 @@ INSERT INTO tfm.e (nro,lat,long,id) VALUES
 	 (456,-24.9852879,-55.1513801,'1703522'),
 	 (457,-24.9852879,-55.1513801,'1703541');
 
-
-DROP TABLE tfm.d;
 
 CREATE TABLE tfm.d (
 	nro int4 NOT NULL,
@@ -9043,12 +9038,6 @@ INSERT INTO tfm.d (nro,lat,long) VALUES
 	 (1807,-25.554805,-54.6520031),
 	 (1808,-25.490144,-54.7607023);
 
-
--- tfm.c definition
-
--- Drop table
-
-DROP TABLE tfm.c;
 
 CREATE TABLE tfm.c (
 	nro int4 NOT NULL,

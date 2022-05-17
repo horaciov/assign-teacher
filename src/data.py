@@ -6,7 +6,7 @@ def init(maxDistance):
     global Dmax, C, D, E, CLASS_SIZE, TEACHER_SIZE, N_OBJ, N_CONSTR
     Dmax=maxDistance
     #Class
-    conn = psycopg2.connect("dbname=tfmdb user=tfm password=Tfm123456 port=5433")
+    conn = psycopg2.connect("dbname=tfmdb user=tfm password=Tfm123456 port=5432")
     cur = conn.cursor()
     
     C = []
