@@ -1,1 +1,0 @@
-Time: 12202.146883964539Best solution found:[[1671 1756 1654 ... 1116 1363  471]]Function value: [[ 6.44855687 -0.44860406 -1.90038071]]Constraint violation: [[0.]]
