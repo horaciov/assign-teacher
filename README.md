@@ -12,7 +12,16 @@ To configure the data set used, perform the following tasks:
   * Create a database tfmdb (owner tfm)
   * Create a schame tfm (CREATE SCHEMA tfm AUTHORIZATION tfm;)
   * Connect with the user created
-  * run the script.sql file
+  * run the input/script.sql file
 
 # Run the algorithm
+
+* Install Python
+
+Install Python dependencies
+
+* pip install -U pymoo
+* pip install geopy
+* pip install psycopg2
+
 py assignTeacher.py
