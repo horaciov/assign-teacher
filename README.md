@@ -24,5 +24,7 @@ Install Python dependencies
 * pip install geopy
 * pip install psycopg2
 
+or install -r requirements.txt
+
 Run in a terminal
 py src/assignTeacher.py
