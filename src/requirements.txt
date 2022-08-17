@@ -1,3 +1,0 @@
-pymoo
-geopy
-psycopg2
